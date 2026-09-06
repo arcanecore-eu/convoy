@@ -40,10 +40,16 @@ const PageContentBlock = ({
                 className={
                     isAdminArea
                         ? ''
-                        : 'min-h-[calc(100vh-3.5rem)] flex flex-col'
+                        : 'flex min-h-[calc(100vh-3.5rem)] min-w-0 max-w-full flex-col overflow-x-hidden'
                 }
             >
-                <div className={isAdminArea ? '' : 'flex-1'}>
+                <div
+                    className={
+                        isAdminArea
+                            ? ''
+                            : 'min-w-0 max-w-full flex-1'
+                    }
+                >
                     <ContentContainer
                         className={className ?? ''}
                         padding
@@ -59,20 +65,32 @@ const PageContentBlock = ({
                     </ContentContainer>
                 </div>
 
-                <ContentContainer className={isAdminArea ? '' : 'mt-auto'}>
-                    <div className='flex justify-between items-center pb-6 pt-4'>
-                       <p className='text-xs text-muted'>
-    &copy; {new Date().getFullYear()} Arcane Core
-</p>
-                    </div>
-                </ContentContainer>
+                <footer
+                    className={
+                        isAdminArea
+                            ? ''
+                            : 'mt-auto min-w-0 w-full shrink-0'
+                    }
+                >
+                    <ContentContainer>
+                        <div className='flex items-center justify-between pb-6 pt-4'>
+                            <p className='text-xs text-muted'>
+                                &copy; {new Date().getFullYear()} Arcane Core
+                            </p>
+                        </div>
+                    </ContentContainer>
+                </footer>
             </div>
         </CSSTransition>
     )
 
     if (isAdminArea) return content
 
-    return <main className='md:ml-[252px]'>{content}</main>
+    return (
+        <main className='min-w-0 max-w-full overflow-x-hidden md:ml-[252px]'>
+            {content}
+        </main>
+    )
 }
 
 export default PageContentBlock

@@ -122,16 +122,26 @@ export const routes: Route[] = [
 
 const ServerRouter = () => {
     const { t: tStrings } = useTranslation('strings')
+
     const matches = useMatches()
     const id = matches[0].params.id
+
     const [error, setError] = useState<string>()
-    const server = ServerContext.useStoreState(state => state.server.data)
+
+    const server = ServerContext.useStoreState(
+        state => state.server.data
+    )
+
     const getServer = ServerContext.useStoreActions(
         actions => actions.server.getServer
     )
+
     const clearServerState = ServerContext.useStoreActions(
         actions => actions.clearServerState
     )
+
+    const { setRoutes, setBreadcrumb } =
+        useContext(NavigationBarContext)
 
     const visibleRoutes = useMemo(
         () => [
@@ -168,6 +178,18 @@ const ServerRouter = () => {
         }
     }, [id])
 
+    useEffect(() => {
+        setRoutes(visibleRoutes)
+    }, [visibleRoutes])
+
+    useEffect(() => {
+        setBreadcrumb(server?.name)
+
+        return () => {
+            setBreadcrumb(null)
+        }
+    }, [server?.name])
+
     const getScreenBlock = (status: EloquentStatus) => {
         switch (status) {
             case 'suspended':
@@ -179,6 +201,7 @@ const ServerRouter = () => {
                         title='Suspended'
                     />
                 )
+
             case 'installing':
                 return (
                     <ScreenBlock
@@ -188,6 +211,7 @@ const ServerRouter = () => {
                         title='Installing'
                     />
                 )
+
             case 'restoring_backup':
                 return (
                     <ScreenBlock
@@ -197,6 +221,7 @@ const ServerRouter = () => {
                         title='Restoring Backup'
                     />
                 )
+
             case 'restoring_snapshot':
                 return (
                     <ScreenBlock
@@ -206,6 +231,7 @@ const ServerRouter = () => {
                         title='Restoring Snapshot'
                     />
                 )
+
             case 'install_failed':
                 return (
                     <ScreenBlock
@@ -215,8 +241,10 @@ const ServerRouter = () => {
                         title='Install failed'
                     />
                 )
+
             case null:
                 return null
+
             default:
                 return (
                     <ScreenBlock
@@ -229,37 +257,23 @@ const ServerRouter = () => {
         }
     }
 
-    const { setRoutes, setBreadcrumb } = useContext(NavigationBarContext)
+    if (!server) {
+        if (error) {
+            return <ErrorMessage message={error} />
+        }
 
-    useEffect(() => {
-        setRoutes(visibleRoutes)
-    }, [visibleRoutes])
-
-    useEffect(() => {
-        setBreadcrumb(server?.name)
-        return () => setBreadcrumb(null)
-    }, [server?.name])
-
-    return !server ? (
-        error ? (
-            <div className='md:ml-[252px]'>
-                <ErrorMessage message={error} />
-            </div>
-        ) : (
-            <div className='md:ml-[252px]'>
+        return (
+            <div className='md:ml-[252px] flex min-h-[calc(100vh-3.5rem)] items-center justify-center'>
                 <Spinner />
             </div>
         )
-    ) : (
-        <>
-            {server.status !== null && (
-                <div className='md:ml-[252px]'>
-                    {getScreenBlock(server.status)}
-                </div>
-            )}
-            {typeof server.status !== 'string' ? <Outlet /> : null}
-        </>
-    )
+    }
+
+    if (server.status !== null) {
+        return getScreenBlock(server.status)
+    }
+
+    return <Outlet />
 }
 
 export default ServerRouter
