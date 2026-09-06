@@ -1,0 +1,40 @@
+/node_modules
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.backup
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+/.idea
+/.vscode
+/supervisord.log
+/supervisord.pid
+_ide_*.php
+stats.html
+.fleet
+lang/php_*.json
+.phpunit.cache
+# Arcane Core production/runtime exclusions
+/storage/logs/
+/storage/framework/cache/
+/storage/framework/sessions/
+/storage/framework/views/
+/bootstrap/cache/
+/dockerfiles/mysql/data/
+
+# OS/editor junk
+.DS_Store
+*.log
+
+# Local backups / temporary files
+*.bak
+*.tar.gz
+*.phase1-backup
+docker-compose.yml.pre-ip
+actions.settings.setTheme
